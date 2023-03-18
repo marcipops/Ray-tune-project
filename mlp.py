@@ -18,7 +18,7 @@ import datetime
 from finrl import config
 from finrl.meta.preprocessor.yahoodownloader import YahooDownloader
 # from FinRL.finrl.meta.preprocessor.preprocessors import FeatureEngineer, data_split
-from finrl.meta.env_stock_trading.env_stocktrading_np import StockTradingEnv as StockTradingEnv_numpy 
+from env_stocktrading_np import StockTradingEnv as StockTradingEnv_numpy 
 from finrl.meta.data_processor import DataProcessor
 from finrl.plot import backtest_stats, backtest_plot, get_daily_return, get_baseline
 # from env import StockTradingEnv as StockTradingEnv_numpy
