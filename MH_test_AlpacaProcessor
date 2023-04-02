@@ -1,0 +1,84 @@
+from finrl.meta.data_processors.processor_alpaca import AlpacaProcessor as Alpaca
+from finrl.config_tickers import DOW_30_TICKER
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("data_source", help="name of data source")
+parser.add_argument("data_key", help="data source key")
+parser.add_argument("data_secret", help="data source secret")
+parser.add_argument("data_url", help="data source base url")
+
+parser.add_argument("trading_brokername", help="name of broker for trading operations")
+parser.add_argument("trading_key", help="trading key")
+parser.add_argument("trading_secret", help="trading secret")
+parser.add_argument("trading_url", help="trading base url")
+parser.add_argument("trading_username", help="trading username")
+parser.add_argument("trading_password", help="trading password")
+parser.add_argument("trading_acc_type", help="trading account type")
+parser.add_argument("trading_acc_number", help="trading account number")
+
+args = parser.parse_args()
+
+DATA_SOURCE = args.data_source
+DATA_KEY = args.data_key
+DATA_SECRET = args.data_secret
+DATA_URL = args.data_url
+
+TRADING_BROKERNAME = args.trading_brokername
+TRADING_KEY = args.trading_key
+TRADING_SECRET = args.trading_secret
+TRADING_URL = args.trading_url
+TRADING_USERNAME = args.trading_username
+TRADING_PASSWORD = args.trading_password
+TRADING_ACC_TYPE = args.trading_acc_type
+TRADING_ACC_NUMBER = args.trading_acc_number
+
+dp = Alpaca(DATA_KEY, DATA_SECRET, DATA_URL)
+
+#----------------------------------------------------------------------------------------------------------
+# Set up sliding window of 6 days training and 2 days testing
+import datetime
+from pandas.tseries.offsets import BDay  # BDay is business day, not birthday...
+
+today = datetime.datetime.today()
+
+TEST_END_DATE = (today - BDay(1)).to_pydatetime().date()
+TEST_START_DATE = (TEST_END_DATE - BDay(1)).to_pydatetime().date()
+TRAIN_END_DATE = (TEST_START_DATE - BDay(1)).to_pydatetime().date()
+TRAIN_START_DATE = (TRAIN_END_DATE - BDay(5)).to_pydatetime().date()
+TRAINFULL_START_DATE = TRAIN_START_DATE
+TRAINFULL_END_DATE = TEST_END_DATE
+
+#TRAIN_START_DATE = str(TRAIN_START_DATE)
+#TRAIN_END_DATE = str(TRAIN_END_DATE)
+#TEST_START_DATE = str(TEST_START_DATE)
+#TEST_END_DATE = str(TEST_END_DATE)
+TRAINFULL_START_DATE = str(TRAINFULL_START_DATE)
+TRAINFULL_END_DATE = str(TRAINFULL_END_DATE)
+
+#print("TRAIN_START_DATE: ", TRAIN_START_DATE)
+#print("TRAIN_END_DATE: ", TRAIN_END_DATE)
+#print("TEST_START_DATE: ", TEST_START_DATE)
+#print("TEST_END_DATE: ", TEST_END_DATE)
+print("TRAINFULL_START_DATE: ", TRAINFULL_START_DATE)
+print("TRAINFULL_END_DATE: ", TRAINFULL_END_DATE)
+#----------------------------------------------------------------------------------------------------------
+
+print("DOW_30_TICKER: ", DOW_30_TICKER)
+time_interval="1Min"
+
+raw_df = dp.download_data(DOW_30_TICKER, TRAINFULL_START_DATE, TRAINFULL_END_DATE, time_interval)
+
+print("raw_df:\n", raw_df)
+
+# The scope of these changes made to
+# pandas settings are local to with statement.
+import pandas as pd
+with pd.option_context('display.max_rows', None,
+                       'display.max_columns', None,
+                       'display.width', None,
+                       'display.max_colwidth', -1
+                       ):
+    print("raw_df: ", raw_df)
+
+#cleaned_df = dp.clean_data(raw_df)
