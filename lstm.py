@@ -82,7 +82,7 @@ def reg_env(config):
     return env(config)
 register_env(env_name, lambda config: env(train_env_config))
 
-train_env_instance = EnvCompatibility(env(train_env_config))
+train_env_instance = env(train_env_config)
 
 # %load_ext autoreload
 # %autoreload 2
