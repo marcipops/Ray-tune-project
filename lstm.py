@@ -121,8 +121,8 @@ scheduler_ = ASHAScheduler(
 
 import config_params
 
-wandb_callback = WandbLoggerCallback(project=config_params.WANB_PROJECT,
-                                     api_key=config_params.WANB_API_KEY,
+wandb_callback = WandbLoggerCallback(project=config_params.WANDB_PROJECT,
+                                     api_key=config_params.WANDB_API_KEY,
                                      upload_checkpoints=True,log_config=True)
 drl_agent = DRLlibv2(
     trainable=model_name,
